@@ -42,6 +42,7 @@ class AbstractTable(QtWidgets.QTableWidget):
         self.viewport().installEventFilter(self.filter)
         self.installEventFilter(self.filter)
 
+        # needs to be replaced by params["game"]["n_customers"] + n_firms
         self.n_player = 21
 
         self.setup()
@@ -141,10 +142,6 @@ class UsersTable(AbstractTable):
 
         self.remove_selected_row()
 
-    def get_selected_users(self):
-
-        self.get_selected_items()
-
 
 class WaitingListTable(AbstractTable):
 
@@ -159,18 +156,6 @@ class WaitingListTable(AbstractTable):
 
         super().__init__(parent=parent, headers=headers)
     
-    def add_user(self, user):
-
-        cond = self.is_already_in_table(user)
-
-        if not cond:
-
-            self.insert(user)
-            
-        else:
-
-            return "User '{}' already registered!".format(user)
-
     def remove_selected_user(self):
         
         self.remove_selected_row()
@@ -306,6 +291,8 @@ class ConnectionFrame(QtWidgets.QWidget):
 
         self.setLayout(self.layout)
 
+    # ----- Update tables ------------------------ # 
+
     def update_waiting_list(self, users):
 
         self.right_table.update(users)
@@ -318,6 +305,8 @@ class ConnectionFrame(QtWidgets.QWidget):
 
         if self.right_table.selectedItems() or self.left_table.selectedItems():
             return (self.right_table, self.left_table)[bool(self.left_table.selectedItems())]
+
+    # ----- Push Buttons  ------------------------ # 
 
     def push_add_button(self):
 
@@ -348,6 +337,8 @@ class ConnectionFrame(QtWidgets.QWidget):
 
         if err:
             self.show_warning(msg=err)
+
+    # ----- Method used in order to defocus another table in order to remove users  -------- # 
 
     def disable_focus(self, obj):
 
