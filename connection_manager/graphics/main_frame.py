@@ -18,7 +18,7 @@ class MouseClick(Qt.QObject):
 
         if event.type() == QtCore.QEvent.MouseButtonPress:
 
-            obj.parent().parent().disable_focus(obj.parent())
+            obj.parent().parent().parent().disable_focus(obj.parent())
 
         return False
 
@@ -40,7 +40,6 @@ class AbstractTable(QtWidgets.QTableWidget):
         # in order to filter clicks
         self.filter = MouseClick()
         self.viewport().installEventFilter(self.filter)
-        self.installEventFilter(self.filter)
 
         # needs to be replaced by params["game"]["n_customers"] + n_firms
         self.n_player = 21
@@ -235,10 +234,10 @@ class ConnectionFrame(QtWidgets.QWidget):
         self.add_button = QtWidgets.QPushButton("Add user")
         self.update_tables_button = QtWidgets.QPushButton("Update tables online")
 
-        self.titles = [QtWidgets.QLabel("Users"), QtWidgets.QLabel("Waiting List")]
-
+        self.left_group = QtWidgets.QGroupBox("Users")
         self.left_table = UsersTable(parent=self, headers=("Username", "Password"))
 
+        self.right_group = QtWidgets.QGroupBox("Waiting list")
         self.right_table = WaitingListTable(parent=self, headers=("Username", ))
 
         self.add_window = AddUserWindow(parent=self)
@@ -258,36 +257,34 @@ class ConnectionFrame(QtWidgets.QWidget):
 
     def fill_layout(self):
 
-        # ------ add table's titles -------- " 
-
-        horizontal_layout_title_row = QtWidgets.QHBoxLayout()
-        
-        for label in self.titles:
-            horizontal_layout_title_row.addWidget(label)
-
-        self.layout.addLayout(horizontal_layout_title_row)
-
         # ------ add first row ------------ # 
 
         horizontal_layout_first_row = QtWidgets.QHBoxLayout()
-        
-        horizontal_layout_first_row.addWidget(self.left_table)
-        horizontal_layout_first_row.addWidget(self.right_table)
+
+        left_table_layout = QtWidgets.QHBoxLayout()
+        right_table_layout = QtWidgets.QHBoxLayout()
+
+        left_table_layout.addWidget(self.left_table)
+        right_table_layout.addWidget(self.right_table)
+
+        # add groups 
+        self.left_group.setLayout(left_table_layout)
+        self.right_group.setLayout(right_table_layout)
+
+        horizontal_layout_first_row.addWidget(self.left_group)
+        horizontal_layout_first_row.addWidget(self.right_group)
 
         self.layout.addLayout(horizontal_layout_first_row)
 
         # ------ add second row ------------ # 
 
-        horizontal_layout_second_row = QtWidgets.QHBoxLayout()
         vertical_layout_second_row = QtWidgets.QVBoxLayout()
 
         vertical_layout_second_row.addWidget(self.add_button, alignment=QtCore.Qt.AlignCenter)
         vertical_layout_second_row.addWidget(self.remove_button, alignment=QtCore.Qt.AlignCenter)
         vertical_layout_second_row.addWidget(self.update_tables_button, alignment=QtCore.Qt.AlignCenter)
 
-        horizontal_layout_second_row.addLayout(vertical_layout_second_row)
-
-        self.layout.addLayout(horizontal_layout_second_row)
+        self.layout.addLayout(vertical_layout_second_row)
 
         self.setLayout(self.layout)
 
