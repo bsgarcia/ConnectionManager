@@ -35,8 +35,6 @@ class AbstractTable(QtWidgets.QTableWidget):
 
         self.columns_headers = headers
 
-        self.data = [[] for i in range(len(headers))]
-        
         # in order to filter clicks
         self.filter = MouseClick()
         self.viewport().installEventFilter(self.filter)
@@ -66,10 +64,10 @@ class AbstractTable(QtWidgets.QTableWidget):
         self.setShowGrid(False)
 
         # enable drag and drop
-        self.setDragEnabled(True);
-        self.setDragDropOverwriteMode(True);
-        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop);
-        self.setDefaultDropAction(QtCore.Qt.CopyAction);
+        self.setDragEnabled(True)
+        self.setDragDropOverwriteMode(True)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
+        self.setDefaultDropAction(QtCore.Qt.CopyAction)
 
         # set names
         for i, name in enumerate(self.columns_headers):
@@ -335,7 +333,7 @@ class ConnectionFrame(QtWidgets.QWidget):
         if err:
             self.show_warning(msg=err)
 
-    # ----- Method used in order to defocus another table in order to remove users  -------- # 
+    # ----- Method used in order to defocus another table when removing users -------- # 
 
     def disable_focus(self, obj):
 
